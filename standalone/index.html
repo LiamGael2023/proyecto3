@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Visor GIS - Spaceship Command Center">
-  <meta name="theme-color" content="#00f5ff">
-  <title>GIS Command Center - Orbital View</title>
+  <meta name="description" content="Visor GIS - Cyberpunk Edition">
+  <meta name="theme-color" content="#ff2a6d">
+  <title>GIS Viewer - Cyberpunk Edition</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -25,40 +25,39 @@
 
   <style>
     /* ==========================================================================
-       GIS COMMAND CENTER - SPACESHIP HUD THEME
+       GIS VIEWER - CYBERPUNK EDITION
+       Neon pink/purple theme with glitch effects
        ========================================================================== */
 
     :root {
-      /* Spaceship Colors */
-      --neon-cyan: #00f5ff;
-      --neon-blue: #00a8ff;
-      --neon-purple: #bf00ff;
-      --neon-pink: #ff00ff;
-      --neon-green: #00ff88;
-      --neon-orange: #ff6600;
-      --neon-red: #ff0044;
-      --neon-yellow: #ffff00;
+      /* Cyberpunk Colors */
+      --neon-pink: #ff2a6d;
+      --neon-purple: #d300c5;
+      --neon-blue: #05d9e8;
+      --neon-yellow: #f9f002;
+      --neon-green: #01ff70;
+      --hot-pink: #ff6ac1;
 
-      /* Backgrounds */
-      --bg-space: #000810;
-      --bg-panel: rgba(0, 20, 40, 0.85);
-      --bg-panel-solid: rgba(0, 30, 60, 0.95);
-      --bg-hover: rgba(0, 245, 255, 0.1);
+      /* Dark backgrounds */
+      --bg-dark: #0d0221;
+      --bg-darker: #05010d;
+      --bg-panel: rgba(13, 2, 33, 0.9);
+      --bg-card: rgba(30, 10, 60, 0.8);
+      --bg-hover: rgba(255, 42, 109, 0.15);
 
       /* Text */
-      --text-primary: #00f5ff;
-      --text-secondary: #00a8ff;
-      --text-dim: #4a7c99;
-      --text-white: #ffffff;
+      --text-primary: #ffffff;
+      --text-secondary: #b8b8d1;
+      --text-accent: #ff2a6d;
 
-      /* Borders & Glows */
-      --border-glow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 245, 255, 0.3);
-      --border-glow-strong: 0 0 15px var(--neon-cyan), 0 0 30px rgba(0, 245, 255, 0.5), 0 0 45px rgba(0, 245, 255, 0.3);
-      --text-glow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 245, 255, 0.5);
+      /* Glows */
+      --glow-pink: 0 0 10px #ff2a6d, 0 0 20px rgba(255, 42, 109, 0.5), 0 0 40px rgba(255, 42, 109, 0.3);
+      --glow-purple: 0 0 10px #d300c5, 0 0 20px rgba(211, 0, 197, 0.5);
+      --glow-blue: 0 0 10px #05d9e8, 0 0 20px rgba(5, 217, 232, 0.5);
 
       /* Typography */
-      --font-display: 'Orbitron', monospace;
-      --font-mono: 'Share Tech Mono', monospace;
+      --font-display: 'Audiowide', cursive;
+      --font-body: 'Rajdhani', sans-serif;
 
       /* Spacing */
       --space-xs: 0.25rem;
@@ -69,34 +68,67 @@
 
       /* Layout */
       --header-height: 70px;
-      --sidebar-width: 340px;
+      --sidebar-width: 320px;
     }
 
     /* Base */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { font-size: 16px; }
 
     body {
-      font-family: var(--font-mono);
-      background: var(--bg-space);
+      font-family: var(--font-body);
+      background: var(--bg-darker);
       color: var(--text-primary);
       overflow: hidden;
       position: relative;
     }
 
-    /* Animated Background */
+    /* Animated city grid background */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse at center, rgba(0, 50, 100, 0.3) 0%, transparent 70%),
-        linear-gradient(0deg, transparent 24%, rgba(0, 245, 255, 0.03) 25%, rgba(0, 245, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 245, 255, 0.03) 75%, rgba(0, 245, 255, 0.03) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(0, 245, 255, 0.03) 25%, rgba(0, 245, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 245, 255, 0.03) 75%, rgba(0, 245, 255, 0.03) 76%, transparent 77%, transparent);
-      background-size: 100% 100%, 50px 50px, 50px 50px;
+        linear-gradient(180deg, transparent 0%, rgba(13, 2, 33, 0.8) 100%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 50px,
+          rgba(255, 42, 109, 0.03) 50px,
+          rgba(255, 42, 109, 0.03) 51px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 50px,
+          rgba(5, 217, 232, 0.03) 50px,
+          rgba(5, 217, 232, 0.03) 51px
+        );
       pointer-events: none;
       z-index: 0;
+    }
+
+    /* Gradient orbs */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255, 42, 109, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 80% 20%, rgba(211, 0, 197, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 40% 40%, rgba(5, 217, 232, 0.1) 0%, transparent 20%);
+      animation: float 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(2%, 2%) rotate(1deg); }
+      66% { transform: translate(-1%, 1%) rotate(-1deg); }
     }
 
     #app {
@@ -108,7 +140,7 @@
       z-index: 1;
     }
 
-    /* ========== HEADER / COMMAND BAR ========== */
+    /* ========== HEADER ========== */
     .header {
       display: flex;
       align-items: center;
@@ -116,24 +148,22 @@
       height: var(--header-height);
       padding: 0 var(--space-lg);
       background: var(--bg-panel);
-      border-bottom: 2px solid var(--neon-cyan);
-      box-shadow: var(--border-glow), inset 0 -20px 60px rgba(0, 245, 255, 0.05);
+      border-bottom: 3px solid;
+      border-image: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue)) 1;
       position: relative;
       z-index: 1000;
     }
 
-    .header::before,
-    .header::after {
+    .header::before {
       content: '';
       position: absolute;
-      bottom: -2px;
-      width: 100px;
-      height: 2px;
-      background: var(--neon-cyan);
-      box-shadow: var(--border-glow-strong);
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+      filter: blur(4px);
     }
-    .header::before { left: 0; }
-    .header::after { right: 0; }
 
     .header-left, .header-right {
       display: flex;
@@ -153,16 +183,30 @@
       align-items: center;
       gap: var(--space-sm);
       font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--neon-cyan);
-      text-shadow: var(--text-glow);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      position: relative;
     }
     .logo i {
-      font-size: 1.8rem;
-      animation: pulse-glow 2s ease-in-out infinite;
+      font-size: 1.6rem;
+      color: var(--neon-pink);
+      text-shadow: var(--glow-pink);
+      -webkit-text-fill-color: var(--neon-pink);
+    }
+    .logo span {
+      animation: glitch 3s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 90%, 100% { transform: translate(0); }
+      92% { transform: translate(-2px, 1px); }
+      94% { transform: translate(2px, -1px); }
+      96% { transform: translate(-1px, -1px); }
+      98% { transform: translate(1px, 1px); }
     }
 
     .menu-toggle {
@@ -171,16 +215,16 @@
       justify-content: center;
       width: 44px;
       height: 44px;
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
+      border: 2px solid var(--neon-pink);
+      border-radius: 8px;
       background: transparent;
-      color: var(--neon-cyan);
+      color: var(--neon-pink);
       cursor: pointer;
       transition: all 0.3s ease;
     }
     .menu-toggle:hover {
       background: var(--bg-hover);
-      box-shadow: var(--border-glow);
+      box-shadow: var(--glow-pink);
     }
 
     /* Search */
@@ -193,31 +237,28 @@
       left: var(--space-md);
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-dim);
-      font-size: 0.875rem;
+      color: var(--neon-purple);
     }
     .search-container input {
       width: 100%;
       padding: var(--space-sm) var(--space-md);
       padding-left: 2.5rem;
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
-      background: rgba(0, 20, 40, 0.8);
+      border: 2px solid var(--neon-purple);
+      border-radius: 8px;
+      background: rgba(13, 2, 33, 0.8);
       color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
       transition: all 0.3s ease;
     }
     .search-container input:focus {
       outline: none;
-      box-shadow: var(--border-glow);
-      background: rgba(0, 30, 60, 0.9);
+      border-color: var(--neon-pink);
+      box-shadow: var(--glow-pink);
     }
     .search-container input::placeholder {
-      color: var(--text-dim);
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
+      color: var(--text-secondary);
     }
 
     .search-results {
@@ -225,10 +266,10 @@
       top: calc(100% + var(--space-sm));
       left: 0;
       right: 0;
-      background: var(--bg-panel-solid);
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
-      box-shadow: var(--border-glow);
+      background: var(--bg-panel);
+      border: 2px solid var(--neon-purple);
+      border-radius: 8px;
+      box-shadow: var(--glow-purple);
       max-height: 300px;
       overflow-y: auto;
       display: none;
@@ -238,8 +279,7 @@
     .search-result-item {
       padding: var(--space-md);
       cursor: pointer;
-      border-bottom: 1px solid rgba(0, 245, 255, 0.2);
-      font-size: 0.8rem;
+      border-bottom: 1px solid rgba(211, 0, 197, 0.3);
       transition: all 0.2s ease;
     }
     .search-result-item:hover {
@@ -255,50 +295,19 @@
       justify-content: center;
       width: 44px;
       height: 44px;
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
+      border: 2px solid var(--neon-blue);
+      border-radius: 8px;
       background: transparent;
-      color: var(--neon-cyan);
+      color: var(--neon-blue);
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
-    }
-    .icon-btn::before {
-      content: '';
-      position: absolute;
-      inset: 2px;
-      border: 1px solid rgba(0, 245, 255, 0.3);
-      border-radius: 2px;
-      pointer-events: none;
     }
     .icon-btn:hover {
-      background: var(--bg-hover);
-      box-shadow: var(--border-glow);
+      background: rgba(5, 217, 232, 0.15);
+      box-shadow: var(--glow-blue);
       transform: scale(1.05);
     }
     .icon-btn:active { transform: scale(0.95); }
-
-    /* Status indicator */
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      padding: var(--space-xs) var(--space-md);
-      border: 1px solid var(--neon-green);
-      border-radius: 4px;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--neon-green);
-    }
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--neon-green);
-      border-radius: 50%;
-      animation: pulse-glow 1.5s ease-in-out infinite;
-      box-shadow: 0 0 10px var(--neon-green);
-    }
 
     /* ========== MAIN CONTENT ========== */
     .main-content {
@@ -307,35 +316,19 @@
       overflow: hidden;
     }
 
-    /* ========== SIDEBAR / CONTROL PANEL ========== */
+    /* ========== SIDEBAR ========== */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--bg-panel);
-      border-right: 2px solid var(--neon-cyan);
-      box-shadow: var(--border-glow);
+      border-right: 3px solid;
+      border-image: linear-gradient(180deg, var(--neon-pink), var(--neon-purple)) 1;
       overflow-y: auto;
       position: relative;
       z-index: 100;
     }
 
-    .sidebar::before {
-      content: 'CONTROL PANEL';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: var(--space-sm);
-      background: rgba(0, 245, 255, 0.1);
-      border-bottom: 1px solid var(--neon-cyan);
-      font-family: var(--font-display);
-      font-size: 0.65rem;
-      text-align: center;
-      letter-spacing: 3px;
-      color: var(--neon-cyan);
-    }
-
     .sidebar-content {
-      padding: var(--space-xl) var(--space-md) var(--space-md);
+      padding: var(--space-lg) var(--space-md);
       display: flex;
       flex-direction: column;
       gap: var(--space-md);
@@ -343,40 +336,33 @@
 
     /* Sidebar Sections */
     .sidebar-section {
-      background: rgba(0, 30, 60, 0.5);
-      border: 1px solid rgba(0, 245, 255, 0.3);
-      border-radius: 4px;
+      background: var(--bg-card);
+      border: 2px solid rgba(211, 0, 197, 0.4);
+      border-radius: 12px;
       overflow: hidden;
-      position: relative;
+      transition: all 0.3s ease;
     }
-
-    .sidebar-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 3px;
-      height: 100%;
-      background: var(--neon-cyan);
-      box-shadow: 0 0 10px var(--neon-cyan);
+    .sidebar-section:hover {
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 20px rgba(211, 0, 197, 0.2);
     }
 
     .section-header {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
-      padding: var(--space-sm) var(--space-md);
-      padding-left: var(--space-lg);
-      background: rgba(0, 245, 255, 0.1);
-      border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+      padding: var(--space-md) var(--space-lg);
+      background: linear-gradient(90deg, rgba(255, 42, 109, 0.3), rgba(211, 0, 197, 0.3));
       font-family: var(--font-display);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 2px;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      color: var(--neon-pink);
       text-transform: uppercase;
-      color: var(--neon-cyan);
     }
-    .section-header i { font-size: 0.9rem; }
+    .section-header i {
+      font-size: 1rem;
+      text-shadow: var(--glow-pink);
+    }
 
     .section-content {
       padding: var(--space-md);
@@ -397,27 +383,27 @@
       gap: var(--space-sm);
       padding: var(--space-sm) var(--space-md);
       border: 1px solid transparent;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 0.8rem;
+      font-weight: 500;
     }
     .layer-item:hover {
       background: var(--bg-hover);
-      border-color: rgba(0, 245, 255, 0.3);
+      border-color: rgba(255, 42, 109, 0.3);
     }
     .layer-item input { display: none; }
     .layer-radio {
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--text-dim);
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-secondary);
       border-radius: 50%;
       position: relative;
       transition: all 0.2s ease;
     }
     .layer-item input:checked + .layer-radio {
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 10px var(--neon-cyan);
+      border-color: var(--neon-pink);
+      box-shadow: var(--glow-pink);
     }
     .layer-item input:checked + .layer-radio::after {
       content: '';
@@ -425,14 +411,14 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 6px;
-      height: 6px;
-      background: var(--neon-cyan);
+      width: 8px;
+      height: 8px;
+      background: var(--neon-pink);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--neon-cyan);
+      box-shadow: var(--glow-pink);
     }
     .layer-name { color: var(--text-secondary); }
-    .layer-item input:checked ~ .layer-name { color: var(--neon-cyan); }
+    .layer-item input:checked ~ .layer-name { color: var(--neon-pink); }
 
     /* Tools Grid */
     .tools-grid {
@@ -445,60 +431,59 @@
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
-      border: 1px solid rgba(0, 245, 255, 0.3);
-      border-radius: 4px;
-      background: rgba(0, 20, 40, 0.5);
-      color: var(--text-secondary);
+      border: 2px solid rgba(5, 217, 232, 0.4);
+      border-radius: 10px;
+      background: rgba(5, 217, 232, 0.05);
+      color: var(--neon-blue);
       cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
+      transition: all 0.3s ease;
+      font-size: 1rem;
     }
     .tool-btn:hover {
-      background: var(--bg-hover);
-      border-color: var(--neon-cyan);
-      color: var(--neon-cyan);
-      box-shadow: var(--border-glow);
-      transform: translateY(-2px);
+      background: rgba(5, 217, 232, 0.2);
+      border-color: var(--neon-blue);
+      box-shadow: var(--glow-blue);
+      transform: translateY(-3px);
     }
     .tool-btn:active { transform: translateY(0); }
     .tool-btn.active {
-      background: rgba(0, 245, 255, 0.2);
-      border-color: var(--neon-cyan);
-      color: var(--neon-cyan);
-      box-shadow: var(--border-glow);
+      background: rgba(255, 42, 109, 0.2);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: var(--glow-pink);
     }
     .tool-btn.danger:hover {
-      border-color: var(--neon-red);
-      color: var(--neon-red);
-      box-shadow: 0 0 10px var(--neon-red);
+      border-color: var(--neon-yellow);
+      color: var(--neon-yellow);
+      box-shadow: 0 0 15px rgba(249, 240, 2, 0.5);
     }
 
     /* Coordinates */
     .coordinates-display {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      padding: var(--space-sm);
-      background: rgba(0, 20, 40, 0.8);
-      border: 1px solid rgba(0, 245, 255, 0.2);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      background: rgba(5, 217, 232, 0.05);
+      border: 1px solid rgba(5, 217, 232, 0.3);
+      border-radius: 8px;
     }
     .coord-item {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 2px;
     }
     .coord-label {
-      color: var(--text-dim);
+      font-size: 0.7rem;
       text-transform: uppercase;
-      font-size: 0.65rem;
       letter-spacing: 1px;
+      color: var(--text-secondary);
     }
     .coord-value {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
       color: var(--neon-green);
-      font-weight: 500;
-      text-shadow: 0 0 5px var(--neon-green);
+      text-shadow: 0 0 10px var(--neon-green);
     }
 
     /* Buttons */
@@ -508,34 +493,32 @@
       justify-content: center;
       gap: var(--space-sm);
       padding: var(--space-sm) var(--space-md);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 500;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
     .btn-primary {
-      background: rgba(0, 245, 255, 0.2);
-      border: 1px solid var(--neon-cyan);
-      color: var(--neon-cyan);
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+      border: none;
+      color: white;
     }
     .btn-primary:hover {
-      background: rgba(0, 245, 255, 0.3);
-      box-shadow: var(--border-glow);
+      box-shadow: var(--glow-pink);
       transform: translateY(-2px);
     }
     .btn-secondary {
       background: transparent;
-      border: 1px solid rgba(0, 245, 255, 0.3);
-      color: var(--text-secondary);
+      border: 2px solid var(--neon-blue);
+      color: var(--neon-blue);
     }
     .btn-secondary:hover {
-      border-color: var(--neon-cyan);
-      color: var(--neon-cyan);
-      background: var(--bg-hover);
+      background: rgba(5, 217, 232, 0.15);
+      box-shadow: var(--glow-blue);
     }
 
     /* ========== MAP CONTAINER ========== */
@@ -548,79 +531,49 @@
     #map {
       width: 100%;
       height: 100%;
-      background: var(--bg-space);
+      background: var(--bg-darker);
     }
 
-    /* HUD Overlay Corners */
-    .map-wrapper::before,
-    .map-wrapper::after {
-      content: '';
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      border: 2px solid var(--neon-cyan);
-      pointer-events: none;
-      z-index: 500;
-      opacity: 0.5;
-    }
+    /* Vignette effect */
     .map-wrapper::before {
-      top: var(--space-md);
-      left: var(--space-md);
-      border-right: none;
-      border-bottom: none;
-    }
-    .map-wrapper::after {
-      bottom: var(--space-md);
-      right: var(--space-md);
-      border-left: none;
-      border-top: none;
-    }
-
-    /* Scanning Line Animation */
-    .scan-line {
+      content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-      box-shadow: 0 0 20px var(--neon-cyan);
-      animation: scan 4s linear infinite;
-      pointer-events: none;
-      z-index: 600;
-      opacity: 0.3;
-    }
-
-    /* Crosshair */
-    .crosshair {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40px;
-      height: 40px;
+      inset: 0;
+      box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.7);
       pointer-events: none;
       z-index: 500;
     }
-    .crosshair::before,
-    .crosshair::after {
+
+    /* Corner decorations */
+    .corner-decor {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      pointer-events: none;
+      z-index: 500;
+    }
+    .corner-decor::before,
+    .corner-decor::after {
       content: '';
       position: absolute;
-      background: var(--neon-cyan);
-      opacity: 0.5;
+      background: var(--neon-pink);
+      box-shadow: var(--glow-pink);
     }
-    .crosshair::before {
-      width: 2px;
-      height: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .crosshair::after {
-      height: 2px;
-      width: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-    }
+    .corner-decor.top-left { top: 20px; left: 20px; }
+    .corner-decor.top-left::before { width: 40px; height: 3px; top: 0; left: 0; }
+    .corner-decor.top-left::after { width: 3px; height: 40px; top: 0; left: 0; }
+
+    .corner-decor.top-right { top: 20px; right: 20px; }
+    .corner-decor.top-right::before { width: 40px; height: 3px; top: 0; right: 0; }
+    .corner-decor.top-right::after { width: 3px; height: 40px; top: 0; right: 0; }
+
+    .corner-decor.bottom-left { bottom: 20px; left: 20px; }
+    .corner-decor.bottom-left::before { width: 40px; height: 3px; bottom: 0; left: 0; }
+    .corner-decor.bottom-left::after { width: 3px; height: 40px; bottom: 0; left: 0; }
+
+    .corner-decor.bottom-right { bottom: 20px; right: 20px; }
+    .corner-decor.bottom-right::before { width: 40px; height: 3px; bottom: 0; right: 0; }
+    .corner-decor.bottom-right::after { width: 3px; height: 40px; bottom: 0; right: 0; }
 
     /* Map Controls */
     .map-controls {
@@ -631,20 +584,20 @@
       flex-direction: column;
       gap: var(--space-xs);
       background: var(--bg-panel);
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
+      border: 2px solid var(--neon-purple);
+      border-radius: 12px;
       padding: var(--space-sm);
-      box-shadow: var(--border-glow);
+      box-shadow: var(--glow-purple);
       z-index: 1000;
     }
     .control-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(0, 245, 255, 0.3);
-      border-radius: 4px;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255, 42, 109, 0.3);
+      border-radius: 8px;
       background: transparent;
       color: var(--text-secondary);
       cursor: pointer;
@@ -652,47 +605,49 @@
     }
     .control-btn:hover {
       background: var(--bg-hover);
-      border-color: var(--neon-cyan);
-      color: var(--neon-cyan);
-      box-shadow: var(--border-glow);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: var(--glow-pink);
     }
     .control-btn:active { transform: scale(0.9); }
     .control-divider {
-      height: 1px;
-      background: rgba(0, 245, 255, 0.3);
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
       margin: var(--space-xs) 0;
     }
 
-    /* Info Panel */
-    .info-panel {
+    /* Stats Panel */
+    .stats-panel {
       position: absolute;
       bottom: var(--space-lg);
       left: var(--space-lg);
       background: var(--bg-panel);
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
+      border: 2px solid var(--neon-blue);
+      border-radius: 12px;
       padding: var(--space-md);
-      font-size: 0.7rem;
+      min-width: 180px;
       z-index: 1000;
-      min-width: 200px;
     }
-    .info-panel-title {
+    .stats-title {
       font-family: var(--font-display);
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       letter-spacing: 2px;
-      color: var(--neon-cyan);
+      color: var(--neon-blue);
       margin-bottom: var(--space-sm);
       text-transform: uppercase;
     }
-    .info-row {
+    .stat-row {
       display: flex;
       justify-content: space-between;
       padding: var(--space-xs) 0;
-      border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+      font-size: 0.8rem;
     }
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--text-dim); }
-    .info-value { color: var(--neon-green); }
+    .stat-label { color: var(--text-secondary); }
+    .stat-value {
+      color: var(--neon-green);
+      font-weight: 600;
+      text-shadow: 0 0 5px var(--neon-green);
+    }
 
     /* ========== TOAST NOTIFICATIONS ========== */
     .toast-container {
@@ -709,47 +664,46 @@
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md) var(--space-lg);
-      background: var(--bg-panel-solid);
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
-      box-shadow: var(--border-glow);
+      background: var(--bg-panel);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
       animation: slideInRight 0.3s ease;
       max-width: 350px;
-      font-size: 0.8rem;
+      border-left: 4px solid;
     }
     .toast.success { border-color: var(--neon-green); }
-    .toast.error { border-color: var(--neon-red); }
-    .toast.info { border-color: var(--neon-cyan); }
-    .toast.warning { border-color: var(--neon-orange); }
-    .toast-icon { font-size: 1.2rem; }
+    .toast.error { border-color: var(--neon-pink); }
+    .toast.info { border-color: var(--neon-blue); }
+    .toast.warning { border-color: var(--neon-yellow); }
+    .toast-icon { font-size: 1.3rem; }
     .toast.success .toast-icon { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green); }
-    .toast.error .toast-icon { color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
-    .toast.info .toast-icon { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
-    .toast.warning .toast-icon { color: var(--neon-orange); text-shadow: 0 0 10px var(--neon-orange); }
+    .toast.error .toast-icon { color: var(--neon-pink); text-shadow: var(--glow-pink); }
+    .toast.info .toast-icon { color: var(--neon-blue); text-shadow: var(--glow-blue); }
+    .toast.warning .toast-icon { color: var(--neon-yellow); }
     .toast-content { flex: 1; }
     .toast-title {
       font-family: var(--font-display);
       font-weight: 600;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       letter-spacing: 1px;
-      text-transform: uppercase;
       margin-bottom: var(--space-xs);
     }
-    .toast-message { color: var(--text-secondary); font-size: 0.75rem; }
+    .toast-message { color: var(--text-secondary); font-size: 0.8rem; }
     .toast-close {
       background: none;
       border: none;
-      color: var(--text-dim);
+      color: var(--text-secondary);
       cursor: pointer;
       padding: var(--space-xs);
+      transition: color 0.2s;
     }
-    .toast-close:hover { color: var(--neon-cyan); }
+    .toast-close:hover { color: var(--neon-pink); }
 
     /* ========== LOADING OVERLAY ========== */
     .loading-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 8, 16, 0.95);
+      background: rgba(5, 1, 13, 0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -761,77 +715,67 @@
       transition: all 0.3s ease;
     }
     .loading-overlay.active { opacity: 1; visibility: visible; }
+
     .loading-spinner {
       width: 60px;
       height: 60px;
-      border: 3px solid rgba(0, 245, 255, 0.2);
-      border-top-color: var(--neon-cyan);
+      border: 4px solid rgba(255, 42, 109, 0.2);
+      border-top-color: var(--neon-pink);
+      border-right-color: var(--neon-purple);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      box-shadow: 0 0 20px var(--neon-cyan);
+      animation: spin 0.8s linear infinite;
+      box-shadow: var(--glow-pink);
     }
     .loading-text {
       font-family: var(--font-display);
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--neon-cyan);
-      animation: blink 1s ease-in-out infinite;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulse 1.5s ease-in-out infinite;
     }
 
     /* ========== LEAFLET CUSTOM ========== */
-    .leaflet-container { font-family: var(--font-mono); background: var(--bg-space); }
+    .leaflet-container { font-family: var(--font-body); background: var(--bg-darker); }
     .leaflet-control-attribution {
       background: var(--bg-panel) !important;
-      color: var(--text-dim) !important;
-      font-size: 0.6rem !important;
-      border-top: 1px solid rgba(0, 245, 255, 0.3) !important;
-      border-left: 1px solid rgba(0, 245, 255, 0.3) !important;
+      color: var(--text-secondary) !important;
+      font-size: 0.65rem !important;
     }
-    .leaflet-control-attribution a { color: var(--neon-cyan) !important; }
+    .leaflet-control-attribution a { color: var(--neon-purple) !important; }
     .leaflet-popup-content-wrapper {
-      background: var(--bg-panel-solid);
-      border: 1px solid var(--neon-cyan);
-      border-radius: 4px;
-      box-shadow: var(--border-glow);
+      background: var(--bg-panel);
+      border: 2px solid var(--neon-pink);
+      border-radius: 12px;
+      box-shadow: var(--glow-pink);
     }
     .leaflet-popup-content {
       margin: var(--space-md);
       color: var(--text-primary);
-      font-size: 0.8rem;
+      font-size: 0.85rem;
     }
-    .leaflet-popup-tip { background: var(--bg-panel-solid); border: 1px solid var(--neon-cyan); }
+    .leaflet-popup-tip {
+      background: var(--bg-panel);
+      border: 2px solid var(--neon-pink);
+      box-shadow: var(--glow-pink);
+    }
     .leaflet-control-zoom { display: none !important; }
     .leaflet-control-scale-line {
       background: var(--bg-panel) !important;
-      border-color: var(--neon-cyan) !important;
+      border-color: var(--neon-purple) !important;
       color: var(--text-primary) !important;
-      font-size: 0.65rem !important;
     }
 
     /* ========== ANIMATIONS ========== */
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
-
     @keyframes slideInRight {
       from { opacity: 0; transform: translateX(100%); }
       to { opacity: 1; transform: translateX(0); }
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes blink {
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50% { opacity: 0.5; }
     }
 
     /* ========== RESPONSIVE ========== */
@@ -847,51 +791,49 @@
       .sidebar.open { transform: translateX(0); }
       .menu-toggle { display: flex; }
       .header-center { display: none; }
-      .status-indicator { display: none; }
     }
 
     @media (max-width: 768px) {
       :root { --sidebar-width: 100%; --header-height: 60px; }
       .logo span { display: none; }
       .map-controls { top: var(--space-md); right: var(--space-md); }
-      .info-panel { display: none; }
+      .stats-panel { display: none; }
+      .corner-decor { display: none; }
     }
 
     /* ========== SCROLLBAR ========== */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-space); }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-darker); }
     ::-webkit-scrollbar-thumb {
-      background: var(--neon-cyan);
-      border-radius: 3px;
-      box-shadow: 0 0 5px var(--neon-cyan);
+      background: linear-gradient(180deg, var(--neon-pink), var(--neon-purple));
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      box-shadow: var(--glow-pink);
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- Header / Command Bar -->
+    <!-- Header -->
     <header class="header">
       <div class="header-left">
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
         </button>
         <div class="logo">
-          <i class="fas fa-satellite"></i>
-          <span>Command Center</span>
+          <i class="fas fa-map-marked-alt"></i>
+          <span>NEOMAPS</span>
         </div>
       </div>
       <div class="header-center">
         <div class="search-container">
           <i class="fas fa-search"></i>
-          <input type="text" id="searchInput" placeholder="Target coordinates..." autocomplete="off">
+          <input type="text" id="searchInput" placeholder="Search location..." autocomplete="off">
           <div class="search-results" id="searchResults"></div>
         </div>
       </div>
       <div class="header-right">
-        <div class="status-indicator">
-          <span class="status-dot"></span>
-          <span>Online</span>
-        </div>
         <button class="icon-btn" id="fullscreenToggle" aria-label="Toggle fullscreen">
           <i class="fas fa-expand"></i>
         </button>
@@ -900,36 +842,36 @@
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Sidebar / Control Panel -->
+      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-content">
           <!-- Layers Section -->
           <section class="sidebar-section">
             <div class="section-header">
               <i class="fas fa-layer-group"></i>
-              <span>Map Layers</span>
+              <span>Base Maps</span>
             </div>
             <div class="section-content">
               <div class="layer-list" id="baseLayers">
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="osm" checked>
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Standard View</span>
+                  <span class="layer-name">Street Map</span>
                 </label>
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="satellite">
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Satellite Feed</span>
+                  <span class="layer-name">Satellite</span>
                 </label>
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="terrain">
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Terrain Scan</span>
+                  <span class="layer-name">Terrain</span>
                 </label>
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="dark">
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Night Vision</span>
+                  <span class="layer-name">Dark Mode</span>
                 </label>
               </div>
             </div>
@@ -938,33 +880,33 @@
           <!-- Tools Section -->
           <section class="sidebar-section">
             <div class="section-header">
-              <i class="fas fa-tools"></i>
-              <span>Tools</span>
+              <i class="fas fa-pen-fancy"></i>
+              <span>Draw Tools</span>
             </div>
             <div class="section-content">
               <div class="tools-grid">
-                <button class="tool-btn" id="drawMarker" title="Drop Marker">
+                <button class="tool-btn" id="drawMarker" title="Marker">
                   <i class="fas fa-map-marker-alt"></i>
                 </button>
-                <button class="tool-btn" id="drawLine" title="Draw Line">
+                <button class="tool-btn" id="drawLine" title="Line">
                   <i class="fas fa-grip-lines"></i>
                 </button>
-                <button class="tool-btn" id="drawPolygon" title="Draw Polygon">
+                <button class="tool-btn" id="drawPolygon" title="Polygon">
                   <i class="fas fa-draw-polygon"></i>
                 </button>
-                <button class="tool-btn" id="drawCircle" title="Draw Circle">
+                <button class="tool-btn" id="drawCircle" title="Circle">
                   <i class="far fa-circle"></i>
                 </button>
-                <button class="tool-btn" id="drawRectangle" title="Draw Rectangle">
+                <button class="tool-btn" id="drawRectangle" title="Rectangle">
                   <i class="far fa-square"></i>
                 </button>
-                <button class="tool-btn" id="measureDistance" title="Measure Distance">
+                <button class="tool-btn" id="measureDistance" title="Measure">
                   <i class="fas fa-ruler"></i>
                 </button>
-                <button class="tool-btn" id="measureArea" title="Measure Area">
+                <button class="tool-btn" id="measureArea" title="Area">
                   <i class="fas fa-vector-square"></i>
                 </button>
-                <button class="tool-btn danger" id="clearDrawings" title="Clear All">
+                <button class="tool-btn danger" id="clearDrawings" title="Clear">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
@@ -975,22 +917,22 @@
           <section class="sidebar-section">
             <div class="section-header">
               <i class="fas fa-crosshairs"></i>
-              <span>Position</span>
+              <span>Coordinates</span>
             </div>
             <div class="section-content">
               <div class="coordinates-display">
                 <div class="coord-item">
-                  <span class="coord-label">Latitude</span>
+                  <span class="coord-label">Lat</span>
                   <span class="coord-value" id="coordLat">--</span>
                 </div>
                 <div class="coord-item">
-                  <span class="coord-label">Longitude</span>
+                  <span class="coord-label">Lng</span>
                   <span class="coord-value" id="coordLng">--</span>
                 </div>
               </div>
               <button class="btn-secondary" id="copyCoords">
                 <i class="fas fa-copy"></i>
-                Copy Coords
+                Copy
               </button>
             </div>
           </section>
@@ -998,13 +940,13 @@
           <!-- Export Section -->
           <section class="sidebar-section">
             <div class="section-header">
-              <i class="fas fa-download"></i>
-              <span>Export Data</span>
+              <i class="fas fa-file-export"></i>
+              <span>Export</span>
             </div>
             <div class="section-content">
               <button class="btn-primary" id="exportGeoJSON">
-                <i class="fas fa-file-code"></i>
-                Export GeoJSON
+                <i class="fas fa-download"></i>
+                Download GeoJSON
               </button>
             </div>
           </section>
@@ -1013,8 +955,11 @@
 
       <!-- Map Container -->
       <div class="map-wrapper">
-        <div class="scan-line"></div>
-        <div class="crosshair"></div>
+        <div class="corner-decor top-left"></div>
+        <div class="corner-decor top-right"></div>
+        <div class="corner-decor bottom-left"></div>
+        <div class="corner-decor bottom-right"></div>
+
         <div id="map"></div>
 
         <!-- Map Controls -->
@@ -1034,20 +979,16 @@
           </button>
         </div>
 
-        <!-- Info Panel -->
-        <div class="info-panel">
-          <div class="info-panel-title">Mission Status</div>
-          <div class="info-row">
-            <span class="info-label">Zoom Level</span>
-            <span class="info-value" id="zoomLevel">6</span>
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+          <div class="stats-title">Map Info</div>
+          <div class="stat-row">
+            <span class="stat-label">Zoom</span>
+            <span class="stat-value" id="zoomLevel">6</span>
           </div>
-          <div class="info-row">
-            <span class="info-label">Objects</span>
-            <span class="info-value" id="objectCount">0</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">System</span>
-            <span class="info-value">Nominal</span>
+          <div class="stat-row">
+            <span class="stat-label">Objects</span>
+            <span class="stat-value" id="objectCount">0</span>
           </div>
         </div>
       </div>
@@ -1059,7 +1000,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
       <div class="loading-spinner"></div>
-      <span class="loading-text">Initializing Systems...</span>
+      <span class="loading-text">LOADING...</span>
     </div>
   </div>
 
@@ -1072,22 +1013,22 @@
       maxZoom: 19,
       baseLayers: {
         osm: {
-          name: 'Standard View',
+          name: 'Street Map',
           url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           attribution: '&copy; OpenStreetMap'
         },
         satellite: {
-          name: 'Satellite Feed',
+          name: 'Satellite',
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           attribution: '&copy; Esri'
         },
         terrain: {
-          name: 'Terrain Scan',
+          name: 'Terrain',
           url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
           attribution: '&copy; OpenTopoMap'
         },
         dark: {
-          name: 'Night Vision',
+          name: 'Dark Mode',
           url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
           attribution: '&copy; CARTO'
         }
@@ -1114,7 +1055,7 @@
       initEventListeners();
       initCoordinates();
       hideLoading();
-      showToast('success', 'Systems Online', 'Command Center initialized successfully');
+      showToast('success', 'Welcome', 'NeoMaps loaded successfully');
     }
 
     // Map
@@ -1129,7 +1070,6 @@
 
       L.control.scale({ position: 'bottomright', metric: true, imperial: false }).addTo(state.map);
 
-      // Update zoom level display
       state.map.on('zoomend', () => {
         document.getElementById('zoomLevel').textContent = state.map.getZoom();
       });
@@ -1159,7 +1099,7 @@
       }
       state.baseLayers[layerKey].addTo(state.map);
       state.currentBaseLayer = layerKey;
-      showToast('info', 'Layer Changed', CONFIG.baseLayers[layerKey].name + ' activated');
+      showToast('info', 'Layer Changed', CONFIG.baseLayers[layerKey].name + ' active');
     }
 
     // Drawing
@@ -1172,22 +1112,22 @@
 
         if (e.layerType === 'marker') {
           const latlng = layer.getLatLng();
-          layer.bindPopup('<strong>MARKER</strong><br>LAT: ' + latlng.lat.toFixed(6) + '<br>LNG: ' + latlng.lng.toFixed(6));
+          layer.bindPopup('<strong>Marker</strong><br>Lat: ' + latlng.lat.toFixed(6) + '<br>Lng: ' + latlng.lng.toFixed(6));
         } else if (e.layerType === 'polyline') {
           const distance = calculateDistance(layer);
-          layer.bindPopup('<strong>LINE</strong><br>Distance: ' + formatDistance(distance));
+          layer.bindPopup('<strong>Line</strong><br>Distance: ' + formatDistance(distance));
         } else if (e.layerType === 'polygon' || e.layerType === 'rectangle') {
           const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-          layer.bindPopup('<strong>' + e.layerType.toUpperCase() + '</strong><br>Area: ' + formatArea(area));
+          layer.bindPopup('<strong>' + e.layerType + '</strong><br>Area: ' + formatArea(area));
         } else if (e.layerType === 'circle') {
           const radius = layer.getRadius();
           const area = Math.PI * radius * radius;
-          layer.bindPopup('<strong>CIRCLE</strong><br>Radius: ' + formatDistance(radius) + '<br>Area: ' + formatArea(area));
+          layer.bindPopup('<strong>Circle</strong><br>Radius: ' + formatDistance(radius) + '<br>Area: ' + formatArea(area));
         }
 
         state.drawnItems.addLayer(layer);
         updateObjectCount();
-        showToast('success', 'Object Created', e.layerType.toUpperCase() + ' added to map');
+        showToast('success', 'Created', e.layerType + ' added');
       });
     }
 
@@ -1199,7 +1139,7 @@
       if (state.currentDrawTool) state.currentDrawTool.disable();
 
       let handler;
-      const opts = { color: '#00f5ff', fillColor: '#00f5ff', fillOpacity: 0.2, weight: 2 };
+      const opts = { color: '#ff2a6d', fillColor: '#ff2a6d', fillOpacity: 0.2, weight: 3 };
 
       switch (type) {
         case 'marker': handler = new L.Draw.Marker(state.map); break;
@@ -1225,7 +1165,7 @@
     function clearDrawings() {
       state.drawnItems.clearLayers();
       updateObjectCount();
-      showToast('info', 'Map Cleared', 'All objects removed');
+      showToast('info', 'Cleared', 'All objects removed');
     }
 
     // Measurements
@@ -1260,11 +1200,11 @@
       const lat = document.getElementById('coordLat').textContent;
       const lng = document.getElementById('coordLng').textContent;
       if (lat === '--') {
-        showToast('warning', 'No Target', 'Move cursor over map first');
+        showToast('warning', 'No Data', 'Move cursor over map');
         return;
       }
       navigator.clipboard.writeText(lat + ', ' + lng).then(() => {
-        showToast('success', 'Copied', 'Coordinates copied to clipboard');
+        showToast('success', 'Copied', 'Coordinates copied');
       });
     }
 
@@ -1276,15 +1216,15 @@
       state.map.once('locationfound', (e) => {
         hideLoading();
         L.marker(e.latlng).addTo(state.drawnItems)
-          .bindPopup('<strong>YOUR POSITION</strong><br>Accuracy: ' + formatDistance(e.accuracy)).openPopup();
-        L.circle(e.latlng, { radius: e.accuracy, color: '#00f5ff', fillOpacity: 0.1 }).addTo(state.drawnItems);
+          .bindPopup('<strong>Your Location</strong><br>Accuracy: ' + formatDistance(e.accuracy)).openPopup();
+        L.circle(e.latlng, { radius: e.accuracy, color: '#ff2a6d', fillOpacity: 0.1 }).addTo(state.drawnItems);
         updateObjectCount();
-        showToast('success', 'Position Acquired', 'Your location has been identified');
+        showToast('success', 'Found', 'Location acquired');
       });
 
       state.map.once('locationerror', (e) => {
         hideLoading();
-        showToast('error', 'Location Error', e.message);
+        showToast('error', 'Error', e.message);
       });
     }
 
@@ -1301,7 +1241,7 @@
         if (results.length > 0) showSearchResults(results);
         else hideSearchResults();
       } catch (error) {
-        showToast('error', 'Search Error', 'Unable to complete search');
+        showToast('error', 'Error', 'Search failed');
       }
     }
 
@@ -1309,7 +1249,7 @@
       const container = document.getElementById('searchResults');
       container.innerHTML = results.map(r =>
         '<div class="search-result-item" data-lat="' + r.lat + '" data-lon="' + r.lon + '">' +
-        '<i class="fas fa-crosshairs" style="color:var(--neon-cyan);margin-right:8px"></i>' + r.display_name + '</div>'
+        '<i class="fas fa-map-pin" style="color:var(--neon-pink);margin-right:8px"></i>' + r.display_name + '</div>'
       ).join('');
       container.classList.add('active');
 
@@ -1333,15 +1273,15 @@
     function exportGeoJSON() {
       const data = state.drawnItems.toGeoJSON();
       if (data.features.length === 0) {
-        showToast('warning', 'No Data', 'No objects to export');
+        showToast('warning', 'Empty', 'No objects to export');
         return;
       }
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'mission-data-' + new Date().toISOString().slice(0, 10) + '.geojson';
+      a.download = 'neomaps-' + new Date().toISOString().slice(0, 10) + '.geojson';
       a.click();
-      showToast('success', 'Data Exported', 'GeoJSON file downloaded');
+      showToast('success', 'Exported', 'File downloaded');
     }
 
     // UI
@@ -1385,8 +1325,8 @@
       document.getElementById('drawPolygon')?.addEventListener('click', () => startDrawing('polygon'));
       document.getElementById('drawCircle')?.addEventListener('click', () => startDrawing('circle'));
       document.getElementById('drawRectangle')?.addEventListener('click', () => startDrawing('rectangle'));
-      document.getElementById('measureDistance')?.addEventListener('click', () => { startDrawing('polyline'); showToast('info', 'Measure', 'Draw a line to measure'); });
-      document.getElementById('measureArea')?.addEventListener('click', () => { startDrawing('polygon'); showToast('info', 'Measure', 'Draw a polygon to measure'); });
+      document.getElementById('measureDistance')?.addEventListener('click', () => { startDrawing('polyline'); showToast('info', 'Measure', 'Draw a line'); });
+      document.getElementById('measureArea')?.addEventListener('click', () => { startDrawing('polygon'); showToast('info', 'Measure', 'Draw a polygon'); });
       document.getElementById('clearDrawings')?.addEventListener('click', clearDrawings);
       document.getElementById('copyCoords')?.addEventListener('click', copyCoordinates);
       document.getElementById('exportGeoJSON')?.addEventListener('click', exportGeoJSON);
