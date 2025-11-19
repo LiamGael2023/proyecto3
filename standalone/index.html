@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Visor GIS moderno con Leaflet">
-  <meta name="theme-color" content="#667eea">
-  <title>GIS Viewer - Leaflet</title>
+  <meta name="description" content="Visor GIS - Spaceship Command Center">
+  <meta name="theme-color" content="#00f5ff">
+  <title>GIS Command Center - Orbital View</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -25,144 +25,162 @@
 
   <style>
     /* ==========================================================================
-       GIS Viewer - Modern CSS with Latest Design Trends
+       GIS COMMAND CENTER - SPACESHIP HUD THEME
        ========================================================================== */
 
     :root {
-      --color-primary: #667eea;
-      --color-primary-dark: #5a67d8;
-      --color-primary-light: #818cf8;
-      --color-secondary: #764ba2;
-      --color-accent: #f093fb;
-      --color-success: #10b981;
-      --color-warning: #f59e0b;
-      --color-danger: #ef4444;
-      --color-info: #3b82f6;
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8fafc;
-      --bg-tertiary: #f1f5f9;
-      --bg-glass: rgba(255, 255, 255, 0.7);
-      --bg-glass-darker: rgba(255, 255, 255, 0.85);
-      --text-primary: #1e293b;
-      --text-secondary: #475569;
-      --text-tertiary: #94a3b8;
-      --text-inverse: #ffffff;
-      --border-color: rgba(0, 0, 0, 0.08);
-      --border-color-strong: rgba(0, 0, 0, 0.15);
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-      --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
-      --glass-blur: blur(20px);
-      --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+      /* Spaceship Colors */
+      --neon-cyan: #00f5ff;
+      --neon-blue: #00a8ff;
+      --neon-purple: #bf00ff;
+      --neon-pink: #ff00ff;
+      --neon-green: #00ff88;
+      --neon-orange: #ff6600;
+      --neon-red: #ff0044;
+      --neon-yellow: #ffff00;
+
+      /* Backgrounds */
+      --bg-space: #000810;
+      --bg-panel: rgba(0, 20, 40, 0.85);
+      --bg-panel-solid: rgba(0, 30, 60, 0.95);
+      --bg-hover: rgba(0, 245, 255, 0.1);
+
+      /* Text */
+      --text-primary: #00f5ff;
+      --text-secondary: #00a8ff;
+      --text-dim: #4a7c99;
+      --text-white: #ffffff;
+
+      /* Borders & Glows */
+      --border-glow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 245, 255, 0.3);
+      --border-glow-strong: 0 0 15px var(--neon-cyan), 0 0 30px rgba(0, 245, 255, 0.5), 0 0 45px rgba(0, 245, 255, 0.3);
+      --text-glow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 245, 255, 0.5);
+
+      /* Typography */
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'Share Tech Mono', monospace;
+
+      /* Spacing */
       --space-xs: 0.25rem;
       --space-sm: 0.5rem;
       --space-md: 1rem;
       --space-lg: 1.5rem;
       --space-xl: 2rem;
-      --radius-sm: 0.375rem;
-      --radius-md: 0.5rem;
-      --radius-lg: 0.75rem;
-      --radius-xl: 1rem;
-      --radius-2xl: 1.5rem;
-      --radius-full: 9999px;
-      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-size-xs: 0.75rem;
-      --font-size-sm: 0.875rem;
-      --font-size-md: 1rem;
-      --font-size-lg: 1.125rem;
-      --transition-fast: 150ms ease;
-      --transition-normal: 250ms ease;
-      --header-height: 64px;
-      --sidebar-width: 320px;
+
+      /* Layout */
+      --header-height: 70px;
+      --sidebar-width: 340px;
     }
 
-    [data-theme="dark"] {
-      --color-primary: #818cf8;
-      --color-primary-dark: #6366f1;
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-tertiary: #334155;
-      --bg-glass: rgba(30, 41, 59, 0.8);
-      --bg-glass-darker: rgba(30, 41, 59, 0.95);
-      --text-primary: #f1f5f9;
-      --text-secondary: #cbd5e1;
-      --text-tertiary: #64748b;
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-color-strong: rgba(255, 255, 255, 0.15);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
-      --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
+    /* Base */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    html { font-size: 16px; }
+
     body {
-      font-family: var(--font-family);
-      font-size: var(--font-size-md);
-      line-height: 1.5;
+      font-family: var(--font-mono);
+      background: var(--bg-space);
       color: var(--text-primary);
-      background: var(--bg-primary);
       overflow: hidden;
+      position: relative;
     }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center, rgba(0, 50, 100, 0.3) 0%, transparent 70%),
+        linear-gradient(0deg, transparent 24%, rgba(0, 245, 255, 0.03) 25%, rgba(0, 245, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 245, 255, 0.03) 75%, rgba(0, 245, 255, 0.03) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(0, 245, 255, 0.03) 25%, rgba(0, 245, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 245, 255, 0.03) 75%, rgba(0, 245, 255, 0.03) 76%, transparent 77%, transparent);
+      background-size: 100% 100%, 50px 50px, 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     #app {
       display: flex;
       flex-direction: column;
       height: 100vh;
       width: 100vw;
+      position: relative;
+      z-index: 1;
     }
 
-    /* Header */
+    /* ========== HEADER / COMMAND BAR ========== */
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: var(--header-height);
       padding: 0 var(--space-lg);
-      background: var(--bg-glass);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border-bottom: var(--glass-border);
-      box-shadow: var(--shadow-md);
+      background: var(--bg-panel);
+      border-bottom: 2px solid var(--neon-cyan);
+      box-shadow: var(--border-glow), inset 0 -20px 60px rgba(0, 245, 255, 0.05);
+      position: relative;
       z-index: 1000;
     }
+
+    .header::before,
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      width: 100px;
+      height: 2px;
+      background: var(--neon-cyan);
+      box-shadow: var(--border-glow-strong);
+    }
+    .header::before { left: 0; }
+    .header::after { right: 0; }
+
     .header-left, .header-right {
       display: flex;
       align-items: center;
       gap: var(--space-md);
     }
+
     .header-center {
       flex: 1;
       max-width: 500px;
       margin: 0 var(--space-xl);
     }
+
+    /* Logo */
     .logo {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
-      font-size: var(--font-size-lg);
-      font-weight: 600;
-      color: var(--color-primary);
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: var(--text-glow);
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
-    .logo i { font-size: 1.5rem; }
+    .logo i {
+      font-size: 1.8rem;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
     .menu-toggle {
       display: none;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: var(--radius-md);
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
       background: transparent;
-      color: var(--text-secondary);
+      color: var(--neon-cyan);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: all 0.3s ease;
     }
     .menu-toggle:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
+      background: var(--bg-hover);
+      box-shadow: var(--border-glow);
     }
 
     /* Search */
@@ -175,118 +193,191 @@
       left: var(--space-md);
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-tertiary);
-      font-size: var(--font-size-sm);
+      color: var(--text-dim);
+      font-size: 0.875rem;
     }
     .search-container input {
       width: 100%;
       padding: var(--space-sm) var(--space-md);
       padding-left: 2.5rem;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      background: rgba(0, 20, 40, 0.8);
       color: var(--text-primary);
-      font-family: inherit;
-      font-size: var(--font-size-sm);
-      transition: all var(--transition-fast);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
     }
     .search-container input:focus {
       outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+      box-shadow: var(--border-glow);
+      background: rgba(0, 30, 60, 0.9);
     }
-    .search-container input::placeholder { color: var(--text-tertiary); }
+    .search-container input::placeholder {
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+
     .search-results {
       position: absolute;
       top: calc(100% + var(--space-sm));
       left: 0;
       right: 0;
-      background: var(--bg-glass-darker);
-      backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
+      background: var(--bg-panel-solid);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      box-shadow: var(--border-glow);
       max-height: 300px;
       overflow-y: auto;
       display: none;
       z-index: 100;
     }
-    .search-results.active {
-      display: block;
-      animation: slideDown var(--transition-normal);
-    }
+    .search-results.active { display: block; }
     .search-result-item {
       padding: var(--space-md);
       cursor: pointer;
-      transition: background var(--transition-fast);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+    }
+    .search-result-item:hover {
+      background: var(--bg-hover);
+      padding-left: var(--space-lg);
     }
     .search-result-item:last-child { border-bottom: none; }
-    .search-result-item:hover { background: var(--bg-tertiary); }
 
     /* Icon Buttons */
     .icon-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: var(--radius-md);
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
       background: transparent;
-      color: var(--text-secondary);
+      color: var(--neon-cyan);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .icon-btn::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 2px;
+      pointer-events: none;
     }
     .icon-btn:hover {
-      background: var(--bg-tertiary);
-      color: var(--color-primary);
+      background: var(--bg-hover);
+      box-shadow: var(--border-glow);
       transform: scale(1.05);
     }
     .icon-btn:active { transform: scale(0.95); }
 
-    /* Main Content */
+    /* Status indicator */
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-xs) var(--space-md);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--neon-green);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      animation: pulse-glow 1.5s ease-in-out infinite;
+      box-shadow: 0 0 10px var(--neon-green);
+    }
+
+    /* ========== MAIN CONTENT ========== */
     .main-content {
       display: flex;
       flex: 1;
       overflow: hidden;
     }
 
-    /* Sidebar */
+    /* ========== SIDEBAR / CONTROL PANEL ========== */
     .sidebar {
       width: var(--sidebar-width);
-      background: var(--bg-glass);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border-right: var(--glass-border);
+      background: var(--bg-panel);
+      border-right: 2px solid var(--neon-cyan);
+      box-shadow: var(--border-glow);
       overflow-y: auto;
-      transition: transform var(--transition-normal);
+      position: relative;
       z-index: 100;
     }
+
+    .sidebar::before {
+      content: 'CONTROL PANEL';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-sm);
+      background: rgba(0, 245, 255, 0.1);
+      border-bottom: 1px solid var(--neon-cyan);
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      text-align: center;
+      letter-spacing: 3px;
+      color: var(--neon-cyan);
+    }
+
     .sidebar-content {
-      padding: var(--space-lg);
+      padding: var(--space-xl) var(--space-md) var(--space-md);
       display: flex;
       flex-direction: column;
-      gap: var(--space-lg);
+      gap: var(--space-md);
     }
+
+    /* Sidebar Sections */
     .sidebar-section {
-      background: var(--bg-glass-darker);
-      border-radius: var(--radius-xl);
-      border: var(--glass-border);
+      background: rgba(0, 30, 60, 0.5);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 4px;
       overflow: hidden;
-      box-shadow: var(--shadow-md);
+      position: relative;
     }
+
+    .sidebar-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+
     .section-header {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
-      padding: var(--space-md) var(--space-lg);
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-      color: var(--text-inverse);
+      padding: var(--space-sm) var(--space-md);
+      padding-left: var(--space-lg);
+      background: rgba(0, 245, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+      font-family: var(--font-display);
+      font-size: 0.7rem;
       font-weight: 600;
-      font-size: var(--font-size-sm);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
     }
-    .section-header i { font-size: var(--font-size-md); }
+    .section-header i { font-size: 0.9rem; }
+
     .section-content {
       padding: var(--space-md);
       display: flex;
@@ -305,36 +396,43 @@
       align-items: center;
       gap: var(--space-sm);
       padding: var(--space-sm) var(--space-md);
-      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      border-radius: 4px;
       cursor: pointer;
-      transition: background var(--transition-fast);
+      transition: all 0.2s ease;
+      font-size: 0.8rem;
     }
-    .layer-item:hover { background: var(--bg-tertiary); }
+    .layer-item:hover {
+      background: var(--bg-hover);
+      border-color: rgba(0, 245, 255, 0.3);
+    }
     .layer-item input { display: none; }
     .layer-radio {
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--border-color-strong);
-      border-radius: var(--radius-full);
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--text-dim);
+      border-radius: 50%;
       position: relative;
-      transition: all var(--transition-fast);
+      transition: all 0.2s ease;
     }
-    .layer-item input:checked + .layer-radio { border-color: var(--color-primary); }
+    .layer-item input:checked + .layer-radio {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
     .layer-item input:checked + .layer-radio::after {
       content: '';
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      background: var(--color-primary);
-      border-radius: var(--radius-full);
+      width: 6px;
+      height: 6px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--neon-cyan);
     }
-    .layer-name {
-      font-size: var(--font-size-sm);
-      color: var(--text-secondary);
-    }
+    .layer-name { color: var(--text-secondary); }
+    .layer-item input:checked ~ .layer-name { color: var(--neon-cyan); }
 
     /* Tools Grid */
     .tools-grid {
@@ -347,45 +445,61 @@
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      background: var(--bg-secondary);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 4px;
+      background: rgba(0, 20, 40, 0.5);
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: all 0.2s ease;
       position: relative;
     }
     .tool-btn:hover {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: var(--text-inverse);
+      background: var(--bg-hover);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: var(--border-glow);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
     }
     .tool-btn:active { transform: translateY(0); }
     .tool-btn.active {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: var(--text-inverse);
+      background: rgba(0, 245, 255, 0.2);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: var(--border-glow);
     }
     .tool-btn.danger:hover {
-      background: var(--color-danger);
-      border-color: var(--color-danger);
+      border-color: var(--neon-red);
+      color: var(--neon-red);
+      box-shadow: 0 0 10px var(--neon-red);
     }
 
     /* Coordinates */
     .coordinates-display {
       display: flex;
-      gap: var(--space-md);
+      flex-direction: column;
+      gap: var(--space-xs);
       padding: var(--space-sm);
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      font-family: 'Monaco', 'Menlo', monospace;
-      font-size: var(--font-size-sm);
+      background: rgba(0, 20, 40, 0.8);
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
     }
-    .coord-item { display: flex; gap: var(--space-xs); }
-    .coord-label { color: var(--text-tertiary); }
-    .coord-value { color: var(--color-primary); font-weight: 500; }
+    .coord-item {
+      display: flex;
+      justify-content: space-between;
+    }
+    .coord-label {
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+    }
+    .coord-value {
+      color: var(--neon-green);
+      font-weight: 500;
+      text-shadow: 0 0 5px var(--neon-green);
+    }
 
     /* Buttons */
     .btn-primary, .btn-secondary {
@@ -394,42 +508,118 @@
       justify-content: center;
       gap: var(--space-sm);
       padding: var(--space-sm) var(--space-md);
-      border: none;
-      border-radius: var(--radius-md);
-      font-family: inherit;
-      font-size: var(--font-size-sm);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     .btn-primary {
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-      color: var(--text-inverse);
+      background: rgba(0, 245, 255, 0.2);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
     }
     .btn-primary:hover {
+      background: rgba(0, 245, 255, 0.3);
+      box-shadow: var(--border-glow);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
     }
     .btn-secondary {
-      background: var(--bg-secondary);
+      background: transparent;
+      border: 1px solid rgba(0, 245, 255, 0.3);
       color: var(--text-secondary);
-      border: 1px solid var(--border-color);
     }
     .btn-secondary:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      background: var(--bg-hover);
     }
 
-    /* Map Container */
+    /* ========== MAP CONTAINER ========== */
     .map-wrapper {
       flex: 1;
       position: relative;
       overflow: hidden;
     }
+
     #map {
       width: 100%;
       height: 100%;
-      background: var(--bg-secondary);
+      background: var(--bg-space);
+    }
+
+    /* HUD Overlay Corners */
+    .map-wrapper::before,
+    .map-wrapper::after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border: 2px solid var(--neon-cyan);
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0.5;
+    }
+    .map-wrapper::before {
+      top: var(--space-md);
+      left: var(--space-md);
+      border-right: none;
+      border-bottom: none;
+    }
+    .map-wrapper::after {
+      bottom: var(--space-md);
+      right: var(--space-md);
+      border-left: none;
+      border-top: none;
+    }
+
+    /* Scanning Line Animation */
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      box-shadow: 0 0 20px var(--neon-cyan);
+      animation: scan 4s linear infinite;
+      pointer-events: none;
+      z-index: 600;
+      opacity: 0.3;
+    }
+
+    /* Crosshair */
+    .crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      pointer-events: none;
+      z-index: 500;
+    }
+    .crosshair::before,
+    .crosshair::after {
+      content: '';
+      position: absolute;
+      background: var(--neon-cyan);
+      opacity: 0.5;
+    }
+    .crosshair::before {
+      width: 2px;
+      height: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .crosshair::after {
+      height: 2px;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     /* Map Controls */
@@ -440,13 +630,11 @@
       display: flex;
       flex-direction: column;
       gap: var(--space-xs);
-      background: var(--bg-glass);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-      border-radius: var(--radius-xl);
+      background: var(--bg-panel);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
       padding: var(--space-sm);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--border-glow);
       z-index: 1000;
     }
     .control-btn {
@@ -455,29 +643,62 @@
       justify-content: center;
       width: 36px;
       height: 36px;
-      border: none;
-      border-radius: var(--radius-md);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      border-radius: 4px;
       background: transparent;
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: all 0.2s ease;
     }
     .control-btn:hover {
-      background: var(--bg-tertiary);
-      color: var(--color-primary);
+      background: var(--bg-hover);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: var(--border-glow);
     }
     .control-btn:active { transform: scale(0.9); }
     .control-divider {
       height: 1px;
-      background: var(--border-color);
+      background: rgba(0, 245, 255, 0.3);
       margin: var(--space-xs) 0;
     }
 
-    /* Toast Notifications */
+    /* Info Panel */
+    .info-panel {
+      position: absolute;
+      bottom: var(--space-lg);
+      left: var(--space-lg);
+      background: var(--bg-panel);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      padding: var(--space-md);
+      font-size: 0.7rem;
+      z-index: 1000;
+      min-width: 200px;
+    }
+    .info-panel-title {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      color: var(--neon-cyan);
+      margin-bottom: var(--space-sm);
+      text-transform: uppercase;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-xs) 0;
+      border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--text-dim); }
+    .info-value { color: var(--neon-green); }
+
+    /* ========== TOAST NOTIFICATIONS ========== */
     .toast-container {
       position: fixed;
-      bottom: var(--space-xl);
-      right: var(--space-xl);
+      top: calc(var(--header-height) + var(--space-md));
+      right: var(--space-md);
       display: flex;
       flex-direction: column;
       gap: var(--space-sm);
@@ -488,102 +709,132 @@
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md) var(--space-lg);
-      background: var(--bg-glass-darker);
-      backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-      animation: slideInRight var(--transition-normal);
+      background: var(--bg-panel-solid);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      box-shadow: var(--border-glow);
+      animation: slideInRight 0.3s ease;
       max-width: 350px;
+      font-size: 0.8rem;
     }
-    .toast.success { border-left: 4px solid var(--color-success); }
-    .toast.error { border-left: 4px solid var(--color-danger); }
-    .toast.info { border-left: 4px solid var(--color-info); }
-    .toast.warning { border-left: 4px solid var(--color-warning); }
-    .toast-icon { font-size: var(--font-size-lg); }
-    .toast.success .toast-icon { color: var(--color-success); }
-    .toast.error .toast-icon { color: var(--color-danger); }
-    .toast.info .toast-icon { color: var(--color-info); }
-    .toast.warning .toast-icon { color: var(--color-warning); }
+    .toast.success { border-color: var(--neon-green); }
+    .toast.error { border-color: var(--neon-red); }
+    .toast.info { border-color: var(--neon-cyan); }
+    .toast.warning { border-color: var(--neon-orange); }
+    .toast-icon { font-size: 1.2rem; }
+    .toast.success .toast-icon { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green); }
+    .toast.error .toast-icon { color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
+    .toast.info .toast-icon { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
+    .toast.warning .toast-icon { color: var(--neon-orange); text-shadow: 0 0 10px var(--neon-orange); }
     .toast-content { flex: 1; }
     .toast-title {
+      font-family: var(--font-display);
       font-weight: 600;
-      font-size: var(--font-size-sm);
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       margin-bottom: var(--space-xs);
     }
-    .toast-message {
-      font-size: var(--font-size-xs);
-      color: var(--text-secondary);
-    }
+    .toast-message { color: var(--text-secondary); font-size: 0.75rem; }
     .toast-close {
       background: none;
       border: none;
-      color: var(--text-tertiary);
+      color: var(--text-dim);
       cursor: pointer;
       padding: var(--space-xs);
     }
-    .toast-close:hover { color: var(--text-primary); }
+    .toast-close:hover { color: var(--neon-cyan); }
 
-    /* Loading Overlay */
+    /* ========== LOADING OVERLAY ========== */
     .loading-overlay {
       position: fixed;
       inset: 0;
-      background: var(--bg-glass);
-      backdrop-filter: var(--glass-blur);
+      background: rgba(0, 8, 16, 0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-md);
+      gap: var(--space-lg);
       z-index: 99999;
       opacity: 0;
       visibility: hidden;
-      transition: all var(--transition-normal);
+      transition: all 0.3s ease;
     }
     .loading-overlay.active { opacity: 1; visibility: visible; }
     .loading-spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid var(--border-color);
-      border-top-color: var(--color-primary);
-      border-radius: var(--radius-full);
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(0, 245, 255, 0.2);
+      border-top-color: var(--neon-cyan);
+      border-radius: 50%;
       animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px var(--neon-cyan);
+    }
+    .loading-text {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      animation: blink 1s ease-in-out infinite;
     }
 
-    /* Leaflet Custom */
-    .leaflet-container { font-family: var(--font-family); }
+    /* ========== LEAFLET CUSTOM ========== */
+    .leaflet-container { font-family: var(--font-mono); background: var(--bg-space); }
     .leaflet-control-attribution {
-      background: var(--bg-glass) !important;
-      backdrop-filter: var(--glass-blur);
-      font-size: var(--font-size-xs) !important;
+      background: var(--bg-panel) !important;
+      color: var(--text-dim) !important;
+      font-size: 0.6rem !important;
+      border-top: 1px solid rgba(0, 245, 255, 0.3) !important;
+      border-left: 1px solid rgba(0, 245, 255, 0.3) !important;
     }
+    .leaflet-control-attribution a { color: var(--neon-cyan) !important; }
     .leaflet-popup-content-wrapper {
-      background: var(--bg-glass-darker);
-      backdrop-filter: var(--glass-blur);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-      border: var(--glass-border);
+      background: var(--bg-panel-solid);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      box-shadow: var(--border-glow);
     }
     .leaflet-popup-content {
       margin: var(--space-md);
       color: var(--text-primary);
-      font-size: var(--font-size-sm);
+      font-size: 0.8rem;
     }
-    .leaflet-popup-tip { background: var(--bg-glass-darker); }
+    .leaflet-popup-tip { background: var(--bg-panel-solid); border: 1px solid var(--neon-cyan); }
     .leaflet-control-zoom { display: none !important; }
-
-    /* Animations */
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .leaflet-control-scale-line {
+      background: var(--bg-panel) !important;
+      border-color: var(--neon-cyan) !important;
+      color: var(--text-primary) !important;
+      font-size: 0.65rem !important;
     }
+
+    /* ========== ANIMATIONS ========== */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
     @keyframes slideInRight {
       from { opacity: 0; transform: translateX(100%); }
       to { opacity: 1; transform: translateX(0); }
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Responsive */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ========== RESPONSIVE ========== */
     @media (max-width: 1024px) {
       .sidebar {
         position: absolute;
@@ -591,52 +842,56 @@
         top: var(--header-height);
         height: calc(100vh - var(--header-height));
         transform: translateX(-100%);
+        transition: transform 0.3s ease;
       }
       .sidebar.open { transform: translateX(0); }
       .menu-toggle { display: flex; }
       .header-center { display: none; }
+      .status-indicator { display: none; }
     }
 
     @media (max-width: 768px) {
-      :root { --sidebar-width: 100%; --header-height: 56px; }
-      .header { padding: 0 var(--space-md); }
+      :root { --sidebar-width: 100%; --header-height: 60px; }
       .logo span { display: none; }
       .map-controls { top: var(--space-md); right: var(--space-md); }
+      .info-panel { display: none; }
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    /* ========== SCROLLBAR ========== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-space); }
     ::-webkit-scrollbar-thumb {
-      background: var(--border-color-strong);
-      border-radius: var(--radius-full);
+      background: var(--neon-cyan);
+      border-radius: 3px;
+      box-shadow: 0 0 5px var(--neon-cyan);
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- Header -->
+    <!-- Header / Command Bar -->
     <header class="header">
       <div class="header-left">
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
           <i class="fas fa-bars"></i>
         </button>
         <div class="logo">
-          <i class="fas fa-globe-americas"></i>
-          <span>GIS Viewer</span>
+          <i class="fas fa-satellite"></i>
+          <span>Command Center</span>
         </div>
       </div>
       <div class="header-center">
         <div class="search-container">
           <i class="fas fa-search"></i>
-          <input type="text" id="searchInput" placeholder="Buscar ubicación..." autocomplete="off">
+          <input type="text" id="searchInput" placeholder="Target coordinates..." autocomplete="off">
           <div class="search-results" id="searchResults"></div>
         </div>
       </div>
       <div class="header-right">
-        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
-          <i class="fas fa-moon"></i>
-        </button>
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span>Online</span>
+        </div>
         <button class="icon-btn" id="fullscreenToggle" aria-label="Toggle fullscreen">
           <i class="fas fa-expand"></i>
         </button>
@@ -645,36 +900,36 @@
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Sidebar -->
+      <!-- Sidebar / Control Panel -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-content">
           <!-- Layers Section -->
           <section class="sidebar-section">
             <div class="section-header">
               <i class="fas fa-layer-group"></i>
-              <span>Capas Base</span>
+              <span>Map Layers</span>
             </div>
             <div class="section-content">
               <div class="layer-list" id="baseLayers">
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="osm" checked>
                   <span class="layer-radio"></span>
-                  <span class="layer-name">OpenStreetMap</span>
+                  <span class="layer-name">Standard View</span>
                 </label>
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="satellite">
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Satélite</span>
+                  <span class="layer-name">Satellite Feed</span>
                 </label>
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="terrain">
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Terreno</span>
+                  <span class="layer-name">Terrain Scan</span>
                 </label>
                 <label class="layer-item">
                   <input type="radio" name="baseLayer" value="dark">
                   <span class="layer-radio"></span>
-                  <span class="layer-name">Oscuro</span>
+                  <span class="layer-name">Night Vision</span>
                 </label>
               </div>
             </div>
@@ -684,32 +939,32 @@
           <section class="sidebar-section">
             <div class="section-header">
               <i class="fas fa-tools"></i>
-              <span>Herramientas</span>
+              <span>Tools</span>
             </div>
             <div class="section-content">
               <div class="tools-grid">
-                <button class="tool-btn" id="drawMarker" title="Marcador">
+                <button class="tool-btn" id="drawMarker" title="Drop Marker">
                   <i class="fas fa-map-marker-alt"></i>
                 </button>
-                <button class="tool-btn" id="drawLine" title="Línea">
+                <button class="tool-btn" id="drawLine" title="Draw Line">
                   <i class="fas fa-grip-lines"></i>
                 </button>
-                <button class="tool-btn" id="drawPolygon" title="Polígono">
+                <button class="tool-btn" id="drawPolygon" title="Draw Polygon">
                   <i class="fas fa-draw-polygon"></i>
                 </button>
-                <button class="tool-btn" id="drawCircle" title="Círculo">
+                <button class="tool-btn" id="drawCircle" title="Draw Circle">
                   <i class="far fa-circle"></i>
                 </button>
-                <button class="tool-btn" id="drawRectangle" title="Rectángulo">
+                <button class="tool-btn" id="drawRectangle" title="Draw Rectangle">
                   <i class="far fa-square"></i>
                 </button>
-                <button class="tool-btn" id="measureDistance" title="Medir distancia">
+                <button class="tool-btn" id="measureDistance" title="Measure Distance">
                   <i class="fas fa-ruler"></i>
                 </button>
-                <button class="tool-btn" id="measureArea" title="Medir área">
+                <button class="tool-btn" id="measureArea" title="Measure Area">
                   <i class="fas fa-vector-square"></i>
                 </button>
-                <button class="tool-btn danger" id="clearDrawings" title="Limpiar">
+                <button class="tool-btn danger" id="clearDrawings" title="Clear All">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
@@ -720,22 +975,22 @@
           <section class="sidebar-section">
             <div class="section-header">
               <i class="fas fa-crosshairs"></i>
-              <span>Coordenadas</span>
+              <span>Position</span>
             </div>
             <div class="section-content">
               <div class="coordinates-display">
                 <div class="coord-item">
-                  <span class="coord-label">Lat:</span>
+                  <span class="coord-label">Latitude</span>
                   <span class="coord-value" id="coordLat">--</span>
                 </div>
                 <div class="coord-item">
-                  <span class="coord-label">Lng:</span>
+                  <span class="coord-label">Longitude</span>
                   <span class="coord-value" id="coordLng">--</span>
                 </div>
               </div>
               <button class="btn-secondary" id="copyCoords">
                 <i class="fas fa-copy"></i>
-                Copiar coordenadas
+                Copy Coords
               </button>
             </div>
           </section>
@@ -744,12 +999,12 @@
           <section class="sidebar-section">
             <div class="section-header">
               <i class="fas fa-download"></i>
-              <span>Exportar</span>
+              <span>Export Data</span>
             </div>
             <div class="section-content">
               <button class="btn-primary" id="exportGeoJSON">
                 <i class="fas fa-file-code"></i>
-                Exportar GeoJSON
+                Export GeoJSON
               </button>
             </div>
           </section>
@@ -758,6 +1013,8 @@
 
       <!-- Map Container -->
       <div class="map-wrapper">
+        <div class="scan-line"></div>
+        <div class="crosshair"></div>
         <div id="map"></div>
 
         <!-- Map Controls -->
@@ -776,6 +1033,23 @@
             <i class="fas fa-home"></i>
           </button>
         </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+          <div class="info-panel-title">Mission Status</div>
+          <div class="info-row">
+            <span class="info-label">Zoom Level</span>
+            <span class="info-value" id="zoomLevel">6</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Objects</span>
+            <span class="info-value" id="objectCount">0</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">System</span>
+            <span class="info-value">Nominal</span>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -785,7 +1059,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
       <div class="loading-spinner"></div>
-      <span>Cargando...</span>
+      <span class="loading-text">Initializing Systems...</span>
     </div>
   </div>
 
@@ -798,22 +1072,22 @@
       maxZoom: 19,
       baseLayers: {
         osm: {
-          name: 'OpenStreetMap',
+          name: 'Standard View',
           url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          attribution: '&copy; OpenStreetMap contributors'
+          attribution: '&copy; OpenStreetMap'
         },
         satellite: {
-          name: 'Satélite',
+          name: 'Satellite Feed',
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           attribution: '&copy; Esri'
         },
         terrain: {
-          name: 'Terreno',
+          name: 'Terrain Scan',
           url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
           attribution: '&copy; OpenTopoMap'
         },
         dark: {
-          name: 'Oscuro',
+          name: 'Night Vision',
           url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
           attribution: '&copy; CARTO'
         }
@@ -827,7 +1101,6 @@
       baseLayers: {},
       drawnItems: null,
       currentDrawTool: null,
-      theme: localStorage.getItem('gis-theme') || 'light',
       sidebarOpen: true
     };
 
@@ -835,32 +1108,13 @@
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
-      initTheme();
       initMap();
       initBaseLayers();
       initDrawLayer();
       initEventListeners();
       initCoordinates();
       hideLoading();
-      showToast('success', 'Bienvenido', 'Visor GIS cargado correctamente');
-    }
-
-    // Theme
-    function initTheme() {
-      document.documentElement.setAttribute('data-theme', state.theme);
-      updateThemeIcon();
-    }
-
-    function toggleTheme() {
-      state.theme = state.theme === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', state.theme);
-      localStorage.setItem('gis-theme', state.theme);
-      updateThemeIcon();
-    }
-
-    function updateThemeIcon() {
-      const icon = document.querySelector('#themeToggle i');
-      if (icon) icon.className = state.theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+      showToast('success', 'Systems Online', 'Command Center initialized successfully');
     }
 
     // Map
@@ -873,7 +1127,12 @@
         zoomControl: false
       });
 
-      L.control.scale({ position: 'bottomleft', metric: true, imperial: false }).addTo(state.map);
+      L.control.scale({ position: 'bottomright', metric: true, imperial: false }).addTo(state.map);
+
+      // Update zoom level display
+      state.map.on('zoomend', () => {
+        document.getElementById('zoomLevel').textContent = state.map.getZoom();
+      });
     }
 
     // Base Layers
@@ -900,7 +1159,7 @@
       }
       state.baseLayers[layerKey].addTo(state.map);
       state.currentBaseLayer = layerKey;
-      showToast('info', 'Capa cambiada', CONFIG.baseLayers[layerKey].name + ' activada');
+      showToast('info', 'Layer Changed', CONFIG.baseLayers[layerKey].name + ' activated');
     }
 
     // Drawing
@@ -913,29 +1172,34 @@
 
         if (e.layerType === 'marker') {
           const latlng = layer.getLatLng();
-          layer.bindPopup('<strong>Marcador</strong><br>Lat: ' + latlng.lat.toFixed(6) + '<br>Lng: ' + latlng.lng.toFixed(6));
+          layer.bindPopup('<strong>MARKER</strong><br>LAT: ' + latlng.lat.toFixed(6) + '<br>LNG: ' + latlng.lng.toFixed(6));
         } else if (e.layerType === 'polyline') {
           const distance = calculateDistance(layer);
-          layer.bindPopup('<strong>Línea</strong><br>Distancia: ' + formatDistance(distance));
+          layer.bindPopup('<strong>LINE</strong><br>Distance: ' + formatDistance(distance));
         } else if (e.layerType === 'polygon' || e.layerType === 'rectangle') {
           const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-          layer.bindPopup('<strong>' + (e.layerType === 'polygon' ? 'Polígono' : 'Rectángulo') + '</strong><br>Área: ' + formatArea(area));
+          layer.bindPopup('<strong>' + e.layerType.toUpperCase() + '</strong><br>Area: ' + formatArea(area));
         } else if (e.layerType === 'circle') {
           const radius = layer.getRadius();
           const area = Math.PI * radius * radius;
-          layer.bindPopup('<strong>Círculo</strong><br>Radio: ' + formatDistance(radius) + '<br>Área: ' + formatArea(area));
+          layer.bindPopup('<strong>CIRCLE</strong><br>Radius: ' + formatDistance(radius) + '<br>Area: ' + formatArea(area));
         }
 
         state.drawnItems.addLayer(layer);
-        showToast('success', 'Elemento creado', e.layerType + ' añadido al mapa');
+        updateObjectCount();
+        showToast('success', 'Object Created', e.layerType.toUpperCase() + ' added to map');
       });
+    }
+
+    function updateObjectCount() {
+      document.getElementById('objectCount').textContent = state.drawnItems.getLayers().length;
     }
 
     function startDrawing(type) {
       if (state.currentDrawTool) state.currentDrawTool.disable();
 
       let handler;
-      const opts = { color: '#667eea', fillColor: '#667eea', fillOpacity: 0.3, weight: 3 };
+      const opts = { color: '#00f5ff', fillColor: '#00f5ff', fillOpacity: 0.2, weight: 2 };
 
       switch (type) {
         case 'marker': handler = new L.Draw.Marker(state.map); break;
@@ -960,7 +1224,8 @@
 
     function clearDrawings() {
       state.drawnItems.clearLayers();
-      showToast('info', 'Mapa limpiado', 'Todos los dibujos eliminados');
+      updateObjectCount();
+      showToast('info', 'Map Cleared', 'All objects removed');
     }
 
     // Measurements
@@ -995,11 +1260,11 @@
       const lat = document.getElementById('coordLat').textContent;
       const lng = document.getElementById('coordLng').textContent;
       if (lat === '--') {
-        showToast('warning', 'Sin coordenadas', 'Mueve el cursor sobre el mapa');
+        showToast('warning', 'No Target', 'Move cursor over map first');
         return;
       }
       navigator.clipboard.writeText(lat + ', ' + lng).then(() => {
-        showToast('success', 'Copiado', 'Coordenadas copiadas');
+        showToast('success', 'Copied', 'Coordinates copied to clipboard');
       });
     }
 
@@ -1011,14 +1276,15 @@
       state.map.once('locationfound', (e) => {
         hideLoading();
         L.marker(e.latlng).addTo(state.drawnItems)
-          .bindPopup('<strong>Tu ubicación</strong><br>Precisión: ' + formatDistance(e.accuracy)).openPopup();
-        L.circle(e.latlng, { radius: e.accuracy, color: '#667eea', fillOpacity: 0.1 }).addTo(state.drawnItems);
-        showToast('success', 'Ubicación encontrada', 'Tu posición ha sido localizada');
+          .bindPopup('<strong>YOUR POSITION</strong><br>Accuracy: ' + formatDistance(e.accuracy)).openPopup();
+        L.circle(e.latlng, { radius: e.accuracy, color: '#00f5ff', fillOpacity: 0.1 }).addTo(state.drawnItems);
+        updateObjectCount();
+        showToast('success', 'Position Acquired', 'Your location has been identified');
       });
 
       state.map.once('locationerror', (e) => {
         hideLoading();
-        showToast('error', 'Error de ubicación', e.message);
+        showToast('error', 'Location Error', e.message);
       });
     }
 
@@ -1035,7 +1301,7 @@
         if (results.length > 0) showSearchResults(results);
         else hideSearchResults();
       } catch (error) {
-        showToast('error', 'Error', 'No se pudo buscar');
+        showToast('error', 'Search Error', 'Unable to complete search');
       }
     }
 
@@ -1043,7 +1309,7 @@
       const container = document.getElementById('searchResults');
       container.innerHTML = results.map(r =>
         '<div class="search-result-item" data-lat="' + r.lat + '" data-lon="' + r.lon + '">' +
-        '<i class="fas fa-map-marker-alt" style="color:var(--color-primary);margin-right:8px"></i>' + r.display_name + '</div>'
+        '<i class="fas fa-crosshairs" style="color:var(--neon-cyan);margin-right:8px"></i>' + r.display_name + '</div>'
       ).join('');
       container.classList.add('active');
 
@@ -1052,6 +1318,7 @@
           state.map.setView([parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)], 15);
           L.marker([parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)])
             .addTo(state.drawnItems).bindPopup(item.textContent.trim()).openPopup();
+          updateObjectCount();
           hideSearchResults();
           document.getElementById('searchInput').value = '';
         });
@@ -1066,15 +1333,15 @@
     function exportGeoJSON() {
       const data = state.drawnItems.toGeoJSON();
       if (data.features.length === 0) {
-        showToast('warning', 'Sin datos', 'No hay elementos para exportar');
+        showToast('warning', 'No Data', 'No objects to export');
         return;
       }
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'gis-export-' + new Date().toISOString().slice(0, 10) + '.geojson';
+      a.download = 'mission-data-' + new Date().toISOString().slice(0, 10) + '.geojson';
       a.click();
-      showToast('success', 'Exportado', 'Archivo GeoJSON descargado');
+      showToast('success', 'Data Exported', 'GeoJSON file downloaded');
     }
 
     // UI
@@ -1107,7 +1374,6 @@
 
     // Event Listeners
     function initEventListeners() {
-      document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
       document.getElementById('fullscreenToggle')?.addEventListener('click', toggleFullscreen);
       document.getElementById('menuToggle')?.addEventListener('click', toggleSidebar);
       document.getElementById('zoomIn')?.addEventListener('click', () => state.map.zoomIn());
@@ -1119,8 +1385,8 @@
       document.getElementById('drawPolygon')?.addEventListener('click', () => startDrawing('polygon'));
       document.getElementById('drawCircle')?.addEventListener('click', () => startDrawing('circle'));
       document.getElementById('drawRectangle')?.addEventListener('click', () => startDrawing('rectangle'));
-      document.getElementById('measureDistance')?.addEventListener('click', () => { startDrawing('polyline'); showToast('info', 'Medir', 'Dibuja una línea'); });
-      document.getElementById('measureArea')?.addEventListener('click', () => { startDrawing('polygon'); showToast('info', 'Medir', 'Dibuja un polígono'); });
+      document.getElementById('measureDistance')?.addEventListener('click', () => { startDrawing('polyline'); showToast('info', 'Measure', 'Draw a line to measure'); });
+      document.getElementById('measureArea')?.addEventListener('click', () => { startDrawing('polygon'); showToast('info', 'Measure', 'Draw a polygon to measure'); });
       document.getElementById('clearDrawings')?.addEventListener('click', clearDrawings);
       document.getElementById('copyCoords')?.addEventListener('click', copyCoordinates);
       document.getElementById('exportGeoJSON')?.addEventListener('click', exportGeoJSON);
